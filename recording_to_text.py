@@ -1,3 +1,5 @@
+# works with video files too
+
 from faster_whisper import WhisperModel
 
 model = WhisperModel(
