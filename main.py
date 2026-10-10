@@ -1,61 +1,24 @@
+from recording_to_mp3 import convert_to_mp3
+from recording_to_text import transcribe_media
+from pathlib import Path
 
-import genanki
-import random
+class FlashCard:
+    def __init__(self, original_media):
+        self.original_media = original_media
+        self.mp3_media = Path(convert_to_mp3(original_media, 'converted_files/'))
+        self.transcription = transcribe_media(self.mp3_media)
 
-dict = {'ゲイ': "Gay"}
+    def printFilePath(self):
+        print(self.mp3_media)
 
+    def printTranscription(self):
+            print(self.transcription)
 
-
-model_id = random.randrange(1 << 30, 1 << 31)
-
-deck_id = random.randrange(1 << 30, 1 << 31)
-
-my_model = genanki.Model(
-    1091735104,
-    'simple model',
-    fields =[
-        {'name': 'Question'},
-        {'name': 'Answer'},
-        {'name': 'Media'}
-    ],
-    
-    templates=[
-        {
-            'name' : 'Card 1',
-            'qfmt' : '{{Question}}<br>{{Media}}',
-            'afmt' : '{{FrontSide}}<hr id="answer">{{Answer}}',
-        },
-    ])
+    def getFileName(self):
+        return self.mp3_media.name
 
 
+a = FlashCard('mined_recordings/audio.mov')
+a.printFilePath()
+a.printTranscription()
 
-
-
-deck = genanki.Deck( # deck
-    1856076597,
-    '[card-mine]'
-)
-
-package = genanki.Package(deck)
-package.media_files = ['audio.mov']
-
-
-
-# for key, value in dict.items():
-
-#     note = genanki.Note(
-#     model=my_model,
-#     fields=[f'{key}', f'{value}']
-    
-#     )
-#     deck.add_note(note)
-
-note = genanki.Note(
-    model=my_model,
-    fields=["hello", "hello",'[sound:audio.mov]']
-)
-
-deck.add_note(note)
-
-
-package.write_to_file('output.apkg')

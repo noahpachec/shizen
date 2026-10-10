@@ -2,16 +2,23 @@
 
 from faster_whisper import WhisperModel
 
-model = WhisperModel(
-    "small",
-    device="cpu",
-    compute_type="int8")
-
-segments, info = model.transcribe(
-    "audio.mov",
-    language="ja"
-)
+def transcribe_media(file):
 
 
-for segment in segments:
-    print(segment.text)
+    model = WhisperModel(
+        "small",
+        device="cpu",
+        compute_type="int8")
+
+    segments, info = model.transcribe(
+        file,
+        language="ja"
+    )
+
+
+    full_text = ""
+    for segment in segments:
+        full_text += segment.text
+
+    return full_text
+
