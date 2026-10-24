@@ -7,23 +7,26 @@ def convert_to_mp3(file, output_dir):
 
     video_extensions = {".mp4", ".mov", ".mkv", ".avi", ".webm"}
 
+    if file.suffix.lower() not in video_extensions:
+        return None
+
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    if file.suffix.lower() in video_extensions:
-        output = output_dir / file.with_suffix(".mp3").name
 
-        print(f"Converting {file.name} -> {output.name}")
+    output = output_dir / file.with_suffix(".mp3").name
+    
+    print(f"Converting {file.name} -> {output.name}")
 
-        subprocess.run([
-            "ffmpeg",
-            "-y",
-            "-loglevel", "error",
-            "-i", str(file),
-            "-vn",
-            "-q:a", "2",
-            str(output)
-        ], check=True)
+    subprocess.run([
+        "ffmpeg",
+        "-y",
+        "-loglevel", "error",
+        "-i", str(file),
+        "-vn",
+        "-q:a", "2",
+        str(output)
+    ], check=True)
 
     return output
 

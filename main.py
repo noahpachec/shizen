@@ -1,6 +1,6 @@
 from recording_to_mp3 import convert_to_mp3
 from recording_to_text import transcribe_media
-from ai_api import 
+from ai_api import AnswerGenerator
 import genanki
 import uuid
 
@@ -8,17 +8,19 @@ from pathlib import Path
 
 class DeckObject:
     def __init__(self, folder):
+        self.answer_generator = AnswerGenerator()
         self.cards = []
         self.folder = Path(folder)
 
+        
     def addBatchAnswers(self):
-
+        self.answer_generator.createAnswers(self.cards)
 
     def loadFiles(self):
         #  Iterate through each file and assign it an object -> ('mined_recordings')
         for file in self.folder.iterdir():
             if not file.is_file():
-               break
+               continue
             card = CardObject(file)
             self.addCard(card)
   
@@ -69,7 +71,7 @@ class DeckObject:
                 model=simple_model,
                 fields=[
                     card.transcription,
-                    card.transcription,
+                    card.answer,
                     f'[sound:{card.mp3_media.name}]'
                 ]
             )
@@ -93,7 +95,7 @@ class CardObject:
         self.id = uuid.uuid4().hex
         new_path = original_media.parent / (self.id + original_media.suffix)
         self.media_with_id = original_media.rename(new_path)
-        self.mp3_media = Path(convert_to_mp3(self.media_with_id, 'converted_files/'))
+        self.mp3_media = convert_to_mp3(self.media_with_id, 'converted_files/')
         self.transcription = transcribe_media(self.mp3_media)
         self.name = self.media_with_id.name
         self.answer = "" # to be added by API
@@ -114,5 +116,5 @@ class CardObject:
 
 deck = DeckObject('mined_recordings')
 deck.loadFiles()
-deck.printCards()
+deck.addBatchAnswers()
 deck.exportDeck()
