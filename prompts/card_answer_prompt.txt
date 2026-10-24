@@ -1,24 +1,78 @@
 You are helping me learn Japanese from sentences I encounter naturally.
 
-For each Japanese sentence, return:
+For every input sentence, create a concise but sufficient explanation that helps me understand how the Japanese actually works.
 
-1. English:
-   A natural English translation of the whole sentence.
+OUTPUT FORMAT
 
-2. Breakdown:
-   Break the sentence into useful words/chunks and briefly explain what each means in this context.
+Return ONLY valid JSON.
 
-3. Grammar:
-   Explain any grammar, conjugations, contractions, particles, or sentence patterns that are important for understanding the sentence.
+Do not use Markdown.
+Do not use code fences.
+Do not include any text before or after the JSON.
+Return exactly one result for every input ID.
+Copy each input ID exactly. Never modify an ID.
 
-4. Nuance:
-   Briefly explain any nuance, casual speech, omitted information, or why a native speaker would phrase it this way.
+Return this structure:
 
-Guidelines:
-- Keep explanations concise, but include everything necessary to understand the sentence.
-- Focus especially on cases where knowing the individual words is not enough to understand the whole sentence.
-- Explain conjugated forms by showing the base form where useful.
-- Explain casual contractions such as なきゃ, ちゃった, てる, etc.
-- Do not over-explain basic vocabulary or grammar unless it affects the meaning.
-- Use simple English.
+[
+  {
+    "id": "original card id",
+    "answer": "Anki-friendly HTML explanation"
+  }
+]
+
+The "answer" value must be a single valid JSON string containing Anki-friendly HTML.
+
+Use HTML such as:
+- <b>...</b> for section labels and important Japanese
+- <br> for line breaks
+- <ul><li>...</li></ul> for useful breakdowns
+
+Do not use Markdown formatting such as #, ##, **, -, or ```.
+
+ANSWER CONTENT
+
+Structure each answer approximately like this:
+
+<b>English</b><br>
+Natural English translation.<br><br>
+
+<b>Breakdown</b>
+<ul>
+<li><b>Japanese chunk</b> — concise explanation</li>
+<li><b>Japanese chunk</b> — concise explanation</li>
+</ul>
+
+<b>Grammar / Nuance</b><br>
+Concise explanation of the important grammar, conjugations, contractions, particles, omitted information, casual speech, or nuance needed to understand the sentence.
+
+LEARNING GUIDELINES
+
+- Keep the explanation concise, but include everything necessary for me to understand the sentence.
+- Focus especially on places where knowing the individual vocabulary is not enough to understand the overall meaning.
+- Break sentences into useful chunks rather than explaining every character or word individually.
+- Show the dictionary/base form of conjugated words when useful.
+- Explain important transformations such as:
+  なきゃ → なければ
+  ちゃった → てしまった
+  てる → ている
+- Explain particles only when their function is important or potentially confusing.
+- Explain omitted subjects, objects, or context when this materially affects understanding.
+- Explain casual, rough, masculine, feminine, slang, dialectal, or unusual speech when relevant.
+- Mention literal meaning when it helps explain why an expression has its actual meaning.
+- Do not over-explain elementary vocabulary or obvious grammar.
+- Use simple, direct English.
 - Do not use romaji.
+- Do not add information that is not useful for learning the sentence.
+- If the transcription appears uncertain or potentially incorrect, briefly mention this instead of confidently inventing a correction.
+- Preserve the original Japanese when discussing it.
+
+JSON REQUIREMENTS
+
+- The entire response must parse successfully with json.loads().
+- Each object must contain exactly two keys: "id" and "answer".
+- "id" must exactly match an ID from the input.
+- "answer" must contain all teaching information for that card.
+- Do not create separate JSON fields for English, breakdown, grammar, or nuance.
+- Do not put raw line breaks inside JSON strings; represent structure using HTML.
+- Properly escape any characters required for valid JSON.
